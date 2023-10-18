@@ -9,6 +9,11 @@ class CounterView {
       this.model.increment();
       this.display();
     });
+
+    decrementButtonEl.addEventListener('click', () => {
+      this.model.decrement();
+      this.display();
+    });
   }
 
   display() {
