@@ -10,6 +10,8 @@ class CounterView {
       this.display();
     });
 
+    const decrementButtonEl = document.querySelector('#decrement-btn');
+    
     decrementButtonEl.addEventListener('click', () => {
       this.model.decrement();
       this.display();
