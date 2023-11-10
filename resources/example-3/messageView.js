@@ -13,16 +13,26 @@ class MessageView {
   }
 
   displayMessage() {
+    // Store message input element into a variable
+    const userMessage = document.querySelector('#message-input').value
+    
+    // Create a user message div element
     const messageDivEl = document.createElement('div');
+  
+    // Set user message div element ID and text content
     messageDivEl.id = 'message';
-    messageDivEl.innerText = 'This message is displayed by javascript';
+    messageDivEl.textContent = userMessage;
+
+    // Append user message div element to the main container element
     document.querySelector('#main-container').append(messageDivEl);
-    console.log('Thanks for clicking me!');
+    
+    // empty message input element's value attribute after receiving user message input
+    console.log(document.querySelector('#message-input').value);
+    document.querySelector('#message-input').value = '';
   }
 
   hideMessage() {
-    const elementToRemove = document.querySelector('#message');
-    elementToRemove.remove(); 
+    document.querySelector('#message').remove();
   }
 }
 module.exports = MessageView;
