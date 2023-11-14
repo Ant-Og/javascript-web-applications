@@ -22,6 +22,12 @@ class NotesView {
   }
 
   displayNotes () {
+    // Remove all note elements previously on the page
+    const notesToRemove = document.querySelectorAll('div.note');
+    notesToRemove.forEach((note) => {
+      note.remove();
+    });
+
     // Store array of notes in a variable
     const allNotes = this.notesModel.getNotes();
     
