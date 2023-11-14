@@ -96,4 +96,22 @@ describe("Notes view", () => {
     // Assert
     expect(document.querySelector("#note-input").value).toBe("");
   });
+
+  it("removes all elements with a 'note' className on click and returns updated list", () => {
+    // Arrange
+    document.body.innerHTML = fs.readFileSync("./index.html");
+    const model = new NotesModel();
+    const view = new NotesView(model);
+    const buttonEl = document.querySelector("#add-note-button");
+    const inputEl = document.querySelector("#note-input");
+    
+    // Act
+    inputEl.value = "This is an example note";
+    buttonEl.click();
+    inputEl.value = "This is a second example note";
+    buttonEl.click();
+
+    // Assert
+    expect(document.querySelectorAll("div.note").length).toBe(2);
+  });
 });
