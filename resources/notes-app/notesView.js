@@ -1,6 +1,8 @@
 class NotesView {
-  constructor (notesModel) {
-    this.notesModel = notesModel
+  constructor(notesModel, notesClient) {
+    this.notesModel = notesModel;
+    this.notesClient = notesClient;
+
     this.mainContainerEl = document.querySelector('#main-container');
     this.buttonEl = document.querySelector('#add-note-button');
     
@@ -10,7 +12,7 @@ class NotesView {
     });
   }
 
-  addNoteOnClick (noteOnClick) {
+  addNoteOnClick(noteOnClick) {
     // Add a new note to the existing array of notes
     this.notesModel.addNote(noteOnClick);
     
@@ -21,12 +23,9 @@ class NotesView {
     document.querySelector('#note-input').value = '';
   }
 
-  displayNotes () {
-    // Remove all note elements previously on the page
-    const notesToRemove = document.querySelectorAll('div.note');
-    notesToRemove.forEach((note) => {
-      note.remove();
-    });
+  displayNotes() {
+    // Remove note from page
+    this.removeNotes();
 
     // Store array of notes in a variable
     const allNotes = this.notesModel.getNotes();
@@ -37,6 +36,21 @@ class NotesView {
       noteEl.className = 'note';
       noteEl.innerHTML = note;
       this.mainContainerEl.append(noteEl);
+    });
+  }
+
+  displayNotesFromApi() {
+    this.notesClient.loadNotes((returnedNotesFromApi) => {
+      this.notesModel.setNotes(returnedNotesFromApi);
+      this.displayNotes();
+    });
+  }
+
+  removeNotes() {
+    // Remove all note elements previously on the page
+    const notesToRemove = document.querySelectorAll('div.note');
+    notesToRemove.forEach((note) => {
+      note.remove();
     });
   }
 }
