@@ -1,10 +1,14 @@
 const NotesModel = require('./notesModel');
 const NotesView = require('./notesView');
+const NotesClient = require('./notesClient');
 
 console.log("The notes app is running");
 
-// Create a new instance of NotesModel and call the addNote method to create an array of notes.
+// Create a NotesModel instance.
 const notesModel = new NotesModel();
+// Create a NotesClient innstance.
+const notesClient = new NotesClient();
+// Dependency-inject the previously created NotesModel & NotesClient instances into a NotesView instance.  
+const notesView = new NotesView(notesModel, notesClient);
 
-// Dependency-inject the previously created instance of NotesModel into a new NotesView instance.  
-const notesView = new NotesView(notesModel);
+notesView.displayNotesFromApi();
