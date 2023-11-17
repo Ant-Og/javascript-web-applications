@@ -3,8 +3,11 @@
  */
 
 const fs = require("fs");
+require('jest-fetch-mock').enableMocks();
 const NotesModel = require("./notesModel");
 const NotesView = require("./notesView");
+const NotesClient = require("./notesClient");
+jest.mock("./notesClient.js");
 
 describe("Notes view", () => {
   
@@ -113,5 +116,24 @@ describe("Notes view", () => {
 
     // Assert
     expect(document.querySelectorAll("div.note").length).toBe(2);
+  });
+
+  it("calls the loadNotes method, sets the received data on the model and then displays the notes data", () => {
+    // Arrange
+    document.body.innerHTML = fs.readFileSync("./index.html");
+    const model = new NotesModel();
+    const client = new NotesClient();
+    const view = new NotesView(model, client);
+    
+    // Act
+    client.loadNotes.mockImplementation((callback) => {
+      callback(["Example note 1", "Example note 2"]);
+    });
+    
+    view.displayNotesFromApi();
+    
+    // Assert
+    expect(document.querySelectorAll("div.note").length).toBe(2);
+    expect(model.getNotes()).toEqual(["Example note 1", "Example note 2"]);
   });
 });
