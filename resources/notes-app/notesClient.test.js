@@ -1,18 +1,35 @@
-const NotesClient = require('./notesClient');
+const NotesClient = require("./notesClient");
+require("jest-fetch-mock").enableFetchMocks();
 
-require('jest-fetch-mock').enableFetchMocks()
+describe("NotesClient class", () => {
+  beforeEach(() => {
+    fetch.resetMocks();
+  });
 
-describe('NotesClient class', () => {
-  it('calls fetch and loads note list info', (done) => {
+  it("calls fetch and loads note list info", (done) => {
     const client = new NotesClient();
+    
     fetch.mockResponseOnce(JSON.stringify({
-      0: "this is a test note"
+      note: "this is a test note"
     }));
 
-    client.loadNotes((returnedDataFromApi) => {
-      expect(returnedDataFromApi[0]).toBe("this is a test note");
-
-      done();
+    client.loadNotes((returnedNotesFromApi) => {
+      expect(returnedNotesFromApi.note).toBe("this is a test note");
     });
+    done();
   });
+
+  it("sends a POST request to the notes backend to create a new note", (done) => {
+    const client = new NotesClient();
+
+    fetch.mockResponseOnce(JSON.stringify({ content: "This is also a test note" }));
+
+    client.createNote("postedNote").then((response) => {
+      expect(response.content).toEqual("This is also a test note")
+    });
+
+    expect(fetch.mock.calls.length).toEqual(1);
+
+    done();
+  })
 });
