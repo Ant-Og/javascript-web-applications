@@ -13,14 +13,13 @@ class NotesView {
   }
 
   addNoteOnClick(noteOnClick) {
-    // Add a new note to the existing array of notes
-    this.notesModel.addNote(noteOnClick);
-    
-    // Call displayNotes methods to display all notes
-    this.displayNotes();
+    this.notesClient.createNote(noteOnClick) // Add a new note to the existing array of notes
+      .then(() => this.displayNotesFromApi()); // Call displayNotes methods to display all notes
 
-    // Empty message input element's value attribute after receiving user message input
-    document.querySelector('#note-input').value = '';
+    document.querySelector('#note-input').value = ''; // Empty message input element's value attribute after receiving user message input
+
+
+    //this.notesModel.addNote(noteOnClick); OLD: Add a new note to the existing array of notes
   }
 
   displayNotes() {
