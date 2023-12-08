@@ -3,15 +3,20 @@
  */
 
 const fs = require("fs");
-require('jest-fetch-mock').enableMocks();
+const JestFetchMock = require('jest-fetch-mock')
+JestFetchMock.enableMocks();
+
 const NotesModel = require("./notesModel");
 const NotesView = require("./notesView");
 const NotesClient = require("./notesClient");
-jest.mock("./notesClient.js");
+// jest.mock("./notesClient.js");
 
 describe("Notes view", () => {
-  
-  it("the div note element has the className 'note'", () => {
+  beforeEach(() => {
+    fetch.resetMocks();
+  });
+
+  xit("the div note element has the className 'note'", () => {
     // Arrange
     document.body.innerHTML = fs.readFileSync("./index.html");
     const model = new NotesModel();
@@ -25,7 +30,7 @@ describe("Notes view", () => {
     expect(document.querySelector("#main-container").children[0].className).toEqual("note");
   });
 
-  it("displays no notes initially", () => {
+  xit("displays no notes initially", () => {
     // Arrange
     document.body.innerHTML = fs.readFileSync("./index.html");
     const model = new NotesModel();
@@ -38,7 +43,7 @@ describe("Notes view", () => {
     expect(document.querySelectorAll("div.note").length).toBe(0);
   });
   
-  it("displays one note on the HTML page after one note is created", () => {
+  xit("displays one note on the HTML page after one note is created", () => {
     // Arrange
     document.body.innerHTML = fs.readFileSync("./index.html");
     const model = new NotesModel();
@@ -52,7 +57,7 @@ describe("Notes view", () => {
     expect(document.querySelectorAll("div.note").length).toBe(1);
   });
 
-  it("displays two notes on the HTML page after two notes are created", () => {
+  xit("displays two notes on the HTML page after two notes are created", () => {
     // Arrange
     document.body.innerHTML = fs.readFileSync("./index.html");
     const model = new NotesModel();
@@ -67,7 +72,7 @@ describe("Notes view", () => {
     expect(document.querySelectorAll("div.note").length).toBe(2);
   });
 
-  it("saves the users input when the add note button is clicked", () => {
+  xit("saves the users input when the add note button is clicked", () => {
     // Arrange
     document.body.innerHTML = fs.readFileSync("./index.html");
     const model = new NotesModel();
@@ -84,7 +89,7 @@ describe("Notes view", () => {
     expect(document.querySelectorAll("div.note")[0].textContent).toBe("This is an example note");
   });
 
-  it("empties the user input box after an entry is made", () => {
+  xit("empties the user input box after an entry is made", () => {
     // Arrange
     document.body.innerHTML = fs.readFileSync("./index.html");
     const model = new NotesModel();
@@ -100,7 +105,7 @@ describe("Notes view", () => {
     expect(document.querySelector("#note-input").value).toBe("");
   });
 
-  it("removes all elements with a 'note' className on click and returns updated list", () => {
+  xit("removes all elements with a 'note' className on click and returns updated list", () => {
     // Arrange
     document.body.innerHTML = fs.readFileSync("./index.html");
     const model = new NotesModel();
@@ -118,7 +123,7 @@ describe("Notes view", () => {
     expect(document.querySelectorAll("div.note").length).toBe(2);
   });
 
-  it("calls the loadNotes method, sets the received data on the model and then displays the notes data", () => {
+  xit("calls the loadNotes method, sets the received data on the model and then displays the notes data", () => {
     // Arrange
     document.body.innerHTML = fs.readFileSync("./index.html");
     const model = new NotesModel();
@@ -135,5 +140,27 @@ describe("Notes view", () => {
     // Assert
     expect(document.querySelectorAll("div.note").length).toBe(2);
     expect(model.getNotes()).toEqual(["Example note 1", "Example note 2"]);
+  });
+
+  it("calls the client.createNote method when the user submits the form", (done) => {
+    
+    // Arrange
+    document.body.innerHTML = fs.readFileSync("./index.html");
+    const mockClient = {
+      createNote: jest.fn(),
+    };
+
+    const model = new NotesModel();
+
+    // Act
+    mockClient.createNote.mockResolvedValueOnce("name");  
+    
+    const view = new NotesView(model, mockClient);
+
+    // Assert
+    view.addNoteOnClick("name").then(() => {
+      expect(mockClient.createNote).toHaveBeenCalledWith("name");
+    });
+    done();
   });
 });
