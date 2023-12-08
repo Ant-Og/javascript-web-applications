@@ -4,22 +4,19 @@ class NotesView {
     this.notesClient = notesClient;
 
     this.mainContainerEl = document.querySelector('#main-container');
-    this.buttonEl = document.querySelector('#add-note-button');
+    this.addNoteButtonEl = document.querySelector('#add-note-button');
+    this.noteInputEl = document.querySelector('#note-input');
     
-    this.buttonEl.addEventListener('click', () => {
-      const noteOnClick = document.querySelector('#note-input').value;
+    this.addNoteButtonEl.addEventListener('click', () => {
+      const noteOnClick = this.noteInputEl.value;
       this.addNoteOnClick(noteOnClick);
+      this.displayNotesFromApi(); // Call displayNotes methods to display all notes
+      this.noteInputEl.value = ''; // Empty message input element's value attribute after receiving user message input
     });
   }
 
   addNoteOnClick(noteOnClick) {
-    this.notesClient.createNote(noteOnClick) // Add a new note to the existing array of notes
-      .then(() => this.displayNotesFromApi()); // Call displayNotes methods to display all notes
-
-    document.querySelector('#note-input').value = ''; // Empty message input element's value attribute after receiving user message input
-
-
-    //this.notesModel.addNote(noteOnClick); OLD: Add a new note to the existing array of notes
+    return this.notesClient.createNote(noteOnClick) // Add a new note to the existing array of notes
   }
 
   displayNotes() {
@@ -40,8 +37,8 @@ class NotesView {
 
   displayNotesFromApi() {
     this.notesClient.loadNotes((returnedNotesFromApi) => {
-      this.notesModel.setNotes(returnedNotesFromApi);
-      this.displayNotes();
+    this.notesModel.setNotes(returnedNotesFromApi);
+       this.displayNotes();
     });
   }
 
