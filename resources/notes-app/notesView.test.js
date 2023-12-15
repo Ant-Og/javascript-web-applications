@@ -9,14 +9,14 @@ JestFetchMock.enableMocks();
 const NotesModel = require("./notesModel");
 const NotesView = require("./notesView");
 const NotesClient = require("./notesClient");
-// jest.mock("./notesClient.js");
+jest.mock("./notesClient.js");
 
 describe("Notes view", () => {
   beforeEach(() => {
     fetch.resetMocks();
   });
 
-  xit("the div note element has the className 'note'", () => {
+  it("the div note element has the className 'note'", () => {
     // Arrange
     document.body.innerHTML = fs.readFileSync("./index.html");
     const model = new NotesModel();
@@ -30,7 +30,7 @@ describe("Notes view", () => {
     expect(document.querySelector("#main-container").children[0].className).toEqual("note");
   });
 
-  xit("displays no notes initially", () => {
+  it("displays no notes initially", () => {
     // Arrange
     document.body.innerHTML = fs.readFileSync("./index.html");
     const model = new NotesModel();
@@ -43,7 +43,7 @@ describe("Notes view", () => {
     expect(document.querySelectorAll("div.note").length).toBe(0);
   });
   
-  xit("displays one note on the HTML page after one note is created", () => {
+  it("displays one note on the HTML page after one note is created", () => {
     // Arrange
     document.body.innerHTML = fs.readFileSync("./index.html");
     const model = new NotesModel();
@@ -57,7 +57,7 @@ describe("Notes view", () => {
     expect(document.querySelectorAll("div.note").length).toBe(1);
   });
 
-  xit("displays two notes on the HTML page after two notes are created", () => {
+  it("displays two notes on the HTML page after two notes are created", () => {
     // Arrange
     document.body.innerHTML = fs.readFileSync("./index.html");
     const model = new NotesModel();
@@ -70,23 +70,6 @@ describe("Notes view", () => {
     
     // Assert
     expect(document.querySelectorAll("div.note").length).toBe(2);
-  });
-
-  xit("saves the users input when the add note button is clicked", () => {
-    // Arrange
-    document.body.innerHTML = fs.readFileSync("./index.html");
-    const model = new NotesModel();
-    const view = new NotesView(model);
-    const buttonEl = document.querySelector("#add-note-button");
-    const inputEl = document.querySelector("#note-input");
-    
-    // Act
-    inputEl.value = "This is an example note";
-    buttonEl.click();
-
-    // Assert
-    expect(document.querySelectorAll("div.note").length).toBe(1);
-    expect(document.querySelectorAll("div.note")[0].textContent).toBe("This is an example note");
   });
 
   xit("empties the user input box after an entry is made", () => {
@@ -123,7 +106,7 @@ describe("Notes view", () => {
     expect(document.querySelectorAll("div.note").length).toBe(2);
   });
 
-  xit("calls the loadNotes method, sets the received data on the model and then displays the notes data", () => {
+  it("calls the loadNotes method, sets the received data on the model and then displays the notes data", (done) => {
     // Arrange
     document.body.innerHTML = fs.readFileSync("./index.html");
     const model = new NotesModel();
@@ -140,10 +123,10 @@ describe("Notes view", () => {
     // Assert
     expect(document.querySelectorAll("div.note").length).toBe(2);
     expect(model.getNotes()).toEqual(["Example note 1", "Example note 2"]);
+    done();
   });
 
   it("calls the client.createNote method when the user submits the form", (done) => {
-    
     // Arrange
     document.body.innerHTML = fs.readFileSync("./index.html");
     const mockClient = {
@@ -162,5 +145,21 @@ describe("Notes view", () => {
       expect(mockClient.createNote).toHaveBeenCalledWith("name");
     });
     done();
+  });
+
+  it("appends an error message on the page", () => {
+    // Arrange
+    document.body.innerHTML = fs.readFileSync("./index.html");
+    const model = new NotesModel();
+    const client = new NotesClient();
+    const view = new NotesView(model, client); 
+
+   // Act
+    const error = "SomeError: Failed to fetch";
+    view.displayError(error);
+
+    // Assert
+    expect(document.querySelectorAll("div.error").length).toBe(1);
+    expect(document.querySelector("div.error").innerHTML).toBe("SomeError: Failed to fetch");
   });
 });
