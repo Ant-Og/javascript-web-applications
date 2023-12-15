@@ -20,11 +20,8 @@ class NotesView {
   }
 
   displayNotes() {
-    // Remove note from page
-    this.removeNotes();
-
-    // Store array of notes in a variable
-    const allNotes = this.notesModel.getNotes();
+    this.removeNotes(); // Remove note from page
+    const allNotes = this.notesModel.getNotes(); // Store array of notes in a variable
     
     // A for loop that iterates through the notes array and appends a new div element to the main-container for each note element. 
     allNotes.forEach((note) => {
@@ -36,10 +33,21 @@ class NotesView {
   }
 
   displayNotesFromApi() {
+    // If no error is produced, loadNotes passes fetched data to first callback function, otherwise loadNotes passes on error data to second callback function.
     this.notesClient.loadNotes((returnedNotesFromApi) => {
-    this.notesModel.setNotes(returnedNotesFromApi);
-       this.displayNotes();
-    });
+      this.notesModel.setNotes(returnedNotesFromApi);
+      this.displayNotes();
+    },
+    (error) => this.displayError(error)
+    );
+  }
+
+  displayError(errorMessage) {
+    this.removeErrors(); // remove errors
+    let errorMessageEl = document.createElement('div');
+    errorMessageEl.className = 'error';
+    errorMessageEl.innerHTML = errorMessage;
+    this.mainContainerEl.append(errorMessageEl);
   }
 
   removeNotes() {
@@ -47,6 +55,13 @@ class NotesView {
     const notesToRemove = document.querySelectorAll('div.note');
     notesToRemove.forEach((note) => {
       note.remove();
+    });
+  }
+
+  removeErrors() {
+    const errorsToRemove = document.querySelectorAll('div.error');
+    errorsToRemove.forEach((error) => {
+      error.remove();
     });
   }
 }
