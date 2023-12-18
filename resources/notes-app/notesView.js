@@ -10,21 +10,21 @@ class NotesView {
     this.addNoteButtonEl.addEventListener('click', () => {
       const noteOnClick = this.noteInputEl.value;
       this.addNoteOnClick(noteOnClick);
-      this.displayNotesFromApi(); // Call displayNotes methods to display all notes
-      this.noteInputEl.value = ''; // Empty message input element's value attribute after receiving user message input
+      this.noteInputEl.value = null; // Empties message input element's value attribute after receiving user message input.
     });
   }
 
-  addNoteOnClick(noteOnClick) {
-    return this.notesClient.createNote(noteOnClick) // Add a new note to the existing array of notes
+  async addNoteOnClick(noteOnClick) {
+    await this.notesClient.createNote(noteOnClick) // Adds a new note to the existing array of notes.
+    this.displayNotesFromApi();
   }
 
   displayNotes() {
-    this.removeNotes(); // Remove note from page
-    const allNotes = this.notesModel.getNotes(); // Store array of notes in a variable
+    this.removeNotes(); 
+    const allNotes = this.notesModel.getNotes(); // Stores array of notes in a variable.
     
-    // A for loop that iterates through the notes array and appends a new div element to the main-container for each note element. 
     allNotes.forEach((note) => {
+      // A for loop that iterates through the notes array and appends a new div element to the main-container for each note element.
       let noteEl = document.createElement('div');
       noteEl.className = 'note';
       noteEl.innerHTML = note;
@@ -37,13 +37,15 @@ class NotesView {
     this.notesClient.loadNotes((returnedNotesFromApi) => {
       this.notesModel.setNotes(returnedNotesFromApi);
       this.displayNotes();
-    },
-    (error) => this.displayError(error)
+    }
+    ,
+    (error) => this.displayError(error) // Error handler if GET endpoint fails.
     );
   }
 
   displayError(errorMessage) {
-    this.removeErrors(); // remove errors
+    // Produces error message on screen.
+    this.removeErrors();
     let errorMessageEl = document.createElement('div');
     errorMessageEl.className = 'error';
     errorMessageEl.innerHTML = errorMessage;
@@ -51,7 +53,7 @@ class NotesView {
   }
 
   removeNotes() {
-    // Remove all note elements previously on the page
+    // Removes all note elements previously on the page.
     const notesToRemove = document.querySelectorAll('div.note');
     notesToRemove.forEach((note) => {
       note.remove();
@@ -59,6 +61,7 @@ class NotesView {
   }
 
   removeErrors() {
+    // Removes error messages from screen.
     const errorsToRemove = document.querySelectorAll('div.error');
     errorsToRemove.forEach((error) => {
       error.remove();
