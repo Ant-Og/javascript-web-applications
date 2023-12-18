@@ -15,6 +15,10 @@ body {
   border-radius: 10px;
 }
 
+.greeting {
+  padding: 10px 8px;
+}
+
 .note {
   border-bottom: 1px solid #aaa;
   padding: 15px;
