@@ -11,4 +11,5 @@ const notesClient = new NotesClient();
 // Dependency-inject the previously created NotesModel & NotesClient instances into a NotesView instance.  
 const notesView = new NotesView(notesModel, notesClient);
 
+notesView.onStart();
 notesView.displayNotesFromApi();
