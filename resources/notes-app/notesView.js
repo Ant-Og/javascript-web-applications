@@ -14,9 +14,17 @@ class NotesView {
     });
   }
 
-  async addNoteOnClick(noteOnClick) {
-    await this.notesClient.createNote(noteOnClick) // Adds a new note to the existing array of notes.
-    this.displayNotesFromApi();
+  onStart() {
+    const greetingEl = document.createElement('div');
+    greetingEl.className = 'greeting';
+    greetingEl.innerHTML = "Type something in the box, then press the 'Add Note' button to save it!"
+    this.mainContainerEl.append(greetingEl);
+    console.log('This note is coming from the server')
+  }
+
+  addNoteOnClick(noteOnClick) {
+    this.notesClient.createNote(noteOnClick) // Adds a new note to the existing array of notes.
+    .then(() => this.displayNotesFromApi());
   }
 
   displayNotes() {
